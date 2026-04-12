@@ -24,9 +24,11 @@ public class GameSession {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, unique = false)
     private User user;
+
     public User getUser() {
         return user;
     }
+
     public void setUser(User user) {
         this.user = user;
     }
@@ -34,9 +36,11 @@ public class GameSession {
     //Total number of guesses taken by user
     @Column(name = "guesses_taken", nullable = false, unique = false)
     private int guessesTaken;
+
     public int getGuessesTaken() {
         return guessesTaken;
     }
+
     public void setGuessesTaken(int guessesTaken) {
         this.guessesTaken = guessesTaken;
     }
@@ -44,9 +48,11 @@ public class GameSession {
     //Total games won by user
     @Column(name = "won", nullable = false, unique = false)
     private boolean won;
+
     public boolean getWon() {
         return won;
     }
+
     public void setWon(boolean won) {
         this.won = won;
     }
@@ -54,13 +60,23 @@ public class GameSession {
     //when user started the gameplay
     @Column(name = "played_at", nullable = false, unique = false)
     private LocalDateTime playedAt;
+
     @PrePersist
-    public void onPlayed(){
+    public void onPlayed() {
         this.playedAt = LocalDateTime.now();
     }
 
     //used to define the levels in game
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "Difficulty", nullable = false, unique = false)
+    @Column(name = "difficulty", nullable = false)
     private Difficulty difficulty;
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
 }
