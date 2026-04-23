@@ -4,10 +4,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173,
-    proxy: {
-      '/auth': 'http://localhost:8080',
-      '/game': 'http://localhost:8080'
-    }
+      proxy: {
+        '/auth': 'https://your-railway-url.up.railway.app',
+        '/game': 'https://your-railway-url.up.railway.app'
+      }
   }
 })
