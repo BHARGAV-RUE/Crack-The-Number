@@ -23,7 +23,10 @@ public class AuthFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        if(path.contains("/auth/login") || path.contains("/auth/register")){
+        if(path.contains("/auth/login") ||
+                path.contains("/auth/register") ||
+                path.equals("/") ||
+                path.contains("/actuator")) {
             filterChain.doFilter(request, response);
             return;
         }
