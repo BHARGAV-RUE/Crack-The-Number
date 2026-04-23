@@ -1,0 +1,243 @@
+.game-page { min-height: 100vh; }
+
+.nav-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 60px;
+  background: rgba(10,10,10,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.text-heading {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 6px;
+  color: var(--primary);
+  text-shadow: 0 0 30px rgba(255,215,0,0.4);
+}
+
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-username { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); }
+
+.btn-outline {
+  padding: 10px 28px;
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  transition: all 0.2s;
+}
+.btn-outline:hover { background: var(--primary); color: #000; }
+
+.btn-primary {
+  padding: 12px 36px;
+  background: var(--primary);
+  color: #000;
+  border: none;
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn-primary:hover:not(:disabled) { background: var(--secondary); transform: translateY(-2px); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Game Main */
+.game-main {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 120px 40px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.game-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: fadeUp 0.4s ease 0.1s both;
+}
+
+.game-info { display: flex; align-items: center; gap: 16px; }
+.game-difficulty { font-family: var(--font-display); font-size: 22px; color: var(--primary); letter-spacing: 3px; }
+.game-range { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); letter-spacing: 2px; }
+
+.guess-counter { display: flex; flex-direction: column; align-items: flex-end; }
+.guess-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; color: var(--text-muted); }
+.guess-count { font-family: var(--font-display); font-size: 36px; color: var(--primary); line-height: 1; }
+
+/* Result */
+.result-display {
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeUp 0.4s ease 0.2s both;
+  transition: border-color 0.3s, background 0.3s;
+}
+.result-display.too-high { border-color: #ff6644; background: rgba(255,100,68,0.08); }
+.result-display.too-low  { border-color: #44aaff; background: rgba(68,170,255,0.08); }
+.result-display.correct  { border-color: var(--primary); background: rgba(255,215,0,0.08); }
+
+.result-text {
+  font-family: var(--font-display);
+  font-size: 36px;
+  letter-spacing: 6px;
+  color: var(--text-muted);
+  transition: color 0.3s;
+}
+.too-high .result-text { color: #ff6644; }
+.too-low  .result-text { color: #44aaff; }
+.correct  .result-text { color: var(--primary); }
+
+/* History */
+.guess-history {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  min-height: 40px;
+  animation: fadeUp 0.4s ease 0.35s both;
+}
+
+.guess-tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.guess-tag.high { border-color: #ff6644; color: #ff6644; }
+.guess-tag.low  { border-color: #44aaff; color: #44aaff; }
+
+/* Input */
+.input-area {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  animation: fadeUp 0.4s ease 0.4s both;
+}
+
+.guess-input {
+  flex: 1;
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-bottom: 2px solid var(--primary);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 4px;
+  outline: none;
+  text-align: center;
+  transition: box-shadow 0.2s;
+}
+.guess-input:focus { box-shadow: var(--glow); }
+.guess-input:disabled { opacity: 0.4; }
+.guess-input::-webkit-inner-spin-button,
+.guess-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.guess-input.shake { animation: shake 0.4s ease; }
+
+.guess-btn { padding: 16px 32px; font-size: 16px; }
+
+/* Forfeit */
+.forfeit-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+  animation: fadeUp 0.4s ease 0.5s both;
+}
+.forfeit-btn:hover { color: var(--danger); }
+
+/* Modals */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.active { display: flex; }
+
+.modal-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--primary);
+  box-shadow: var(--glow);
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  animation: fadeUp 0.3s ease;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: 4px;
+  color: var(--primary);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.win-modal-box { text-align: center; }
+.win-title { font-size: 48px; }
+
+.win-number {
+  font-family: var(--font-display);
+  font-size: 120px;
+  color: var(--primary);
+  line-height: 1;
+  text-shadow: 0 0 60px rgba(255,215,0,0.4);
+  letter-spacing: 8px;
+}
+
+.win-message {
+  font-size: 18px;
+  color: var(--text-muted);
+  margin: 16px 0 28px;
+}
+
+.win-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.forfeit-message {
+  font-size: 18px;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 16px 0 28px;
+}
+
+.gold-text { color: var(--primary); font-size: 32px; }

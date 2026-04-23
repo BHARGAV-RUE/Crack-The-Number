@@ -1,0 +1,53 @@
+:root {
+  --bg-color:    #0a0a0a;
+  --bg-secondary:#111111;
+  --primary:     #FFD700;
+  --secondary:   #FFA500;
+  --danger:      #ff4444;
+  --text:        #ffffff;
+  --text-muted:  #888888;
+  --border:      rgba(255, 215, 0, 0.2);
+  --glow:        0 0 20px rgba(255, 215, 0, 0.25);
+  --font-display:'Bebas Neue', cursive;
+  --font-mono:   'Share Tech Mono', monospace;
+  --font-body:   'Rajdhani', sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,215,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,215,0,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+a { color: var(--primary); text-decoration: none; }
+h1,h2,h3,h4 { font-family: var(--font-display); letter-spacing: 2px; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-8px); }
+  40%     { transform: translateX(8px); }
+  60%     { transform: translateX(-5px); }
+  80%     { transform: translateX(5px); }
+}
