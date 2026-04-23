@@ -1,7 +1,9 @@
+const BASE_URL = import.meta.env.VITE_API_URL || ''
+
 const authService = {
   async register(username, email, password) {
     try {
-      const res = await fetch('/auth/register', {
+      const res = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password })
@@ -15,7 +17,7 @@ const authService = {
 
   async login(username, password) {
     try {
-      const res = await fetch('/auth/login', {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -35,7 +37,7 @@ const authService = {
   async logout() {
     const token = localStorage.getItem('token')
     if (token) {
-      await fetch('/auth/logout', {
+      await fetch(`${BASE_URL}/auth/logout`, {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + token }
       })

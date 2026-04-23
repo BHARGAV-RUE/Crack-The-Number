@@ -1,8 +1,10 @@
 import authService from './authService'
 
+const BASE_URL = import.meta.env.VITE_API_URL || ''
+
 const gameService = {
   async startGame(difficulty) {
-    const res = await fetch(`/game/start?difficulty=${difficulty}`, {
+    const res = await fetch(`${BASE_URL}/game/start?difficulty=${difficulty}`, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + authService.getToken() }
     })
@@ -10,7 +12,7 @@ const gameService = {
   },
 
   async submitGuess(guess) {
-    const res = await fetch(`/game/guess?guess=${guess}`, {
+    const res = await fetch(`${BASE_URL}/game/guess?guess=${guess}`, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + authService.getToken() }
     })
@@ -18,7 +20,7 @@ const gameService = {
   },
 
   async forfeit() {
-    const res = await fetch('/game/forfeit', {
+    const res = await fetch(`${BASE_URL}/game/forfeit`, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + authService.getToken() }
     })
@@ -26,7 +28,7 @@ const gameService = {
   },
 
   async getStats() {
-    const res = await fetch('/game/stats', {
+    const res = await fetch(`${BASE_URL}/game/stats`, {
       headers: { 'Authorization': 'Bearer ' + authService.getToken() }
     })
     if (!res.ok) return null
