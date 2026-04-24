@@ -5,22 +5,24 @@ import './index.css'
 
 export default function Index() {
   const navigate = useNavigate()
-  const [modal, setModal]             = useState(null)
-  const [loginData, setLoginData]     = useState({ username: '', password: '' })
-  const [signupData, setSignupData]   = useState({ email: '', username: '', password: '' })
-  const [loginError, setLoginError]   = useState('')
-  const [signupError, setSignupError] = useState('')
-  const [signupSuccess, setSignupSuccess] = useState('')
-  const [strength, setStrength]       = useState({ score: 0, label: '', color: '' })
-  const [showLoginPass, setShowLoginPass]   = useState(false)   // 👁️ new
-  const [showSignupPass, setShowSignupPass] = useState(false)   // 👁️ new
+  const [modal, setModal]                   = useState(null)
+  const [loginData, setLoginData]           = useState({ username: '', password: '' })
+  const [signupData, setSignupData]         = useState({ email: '', username: '', password: '' })
+  const [loginError, setLoginError]         = useState('')
+  const [loginSuccess, setLoginSuccess]     = useState('')
+  const [signupError, setSignupError]       = useState('')
+  const [signupSuccess, setSignupSuccess]   = useState('')
+  const [strength, setStrength]             = useState({ score: 0, label: '', color: '', width: '0%' })
+  const [showLoginPass, setShowLoginPass]   = useState(false)
+  const [showSignupPass, setShowSignupPass] = useState(false)
+  const [loading, setLoading]               = useState(false)
 
   function checkStrength(password) {
     let score = 0
-    if (password.length >= 8)             score++
-    if (/[A-Z]/.test(password))           score++
-    if (/[0-9]/.test(password))           score++
-    if (/[^A-Za-z0-9]/.test(password))   score++
+    if (password.length >= 8)           score++
+    if (/[A-Z]/.test(password))         score++
+    if (/[0-9]/.test(password))         score++
+    if (/[^A-Za-z0-9]/.test(password)) score++
     const levels = {
       0: { label: '',       color: 'transparent', width: '0%'   },
       1: { label: 'WEAK',   color: '#ff4444',     width: '25%'  },
@@ -31,52 +33,95 @@ export default function Index() {
     setStrength({ score, ...levels[score] })
   }
 
+  // ── Login ──
   async function handleLogin(e) {
     e.preventDefault()
     setLoginError('')
+    setLoginSuccess('')
+
     if (!loginData.username || !loginData.password) {
-      setLoginError('Please fill in all fields'); return
+      setLoginError('Please fill in all fields')
+      return
     }
+
+    setLoading(true)
+    setLoginSuccess('Logging in...')
+
     const result = await authService.login(loginData.username, loginData.password)
+    setLoading(false)
+
     if (result.success) {
-      navigate('/dashboard')
+      setLoginSuccess('Login successful! Redirecting...')
+      setTimeout(() => navigate('/dashboard'), 800)
     } else {
-      setLoginError(result.message)
+      setLoginSuccess('')
+      setLoginError(result.message || 'Invalid username or password')
     }
   }
 
+  // ── Register ──
   async function handleRegister(e) {
     e.preventDefault()
     setSignupError('')
     setSignupSuccess('')
+
     if (!signupData.email || !signupData.username || !signupData.password) {
-      setSignupError('Please fill in all fields'); return
+      setSignupError('Please fill in all fields')
+      return
     }
     if (strength.score < 3) {
-      setSignupError('Password too weak — use 8+ chars, uppercase and a number'); return
+      setSignupError('Password too weak — use 8+ chars, uppercase and a number')
+      return
     }
-    const result = await authService.register(signupData.username, signupData.email, signupData.password)
+
+    setLoading(true)
+    setSignupSuccess('Creating your account...')
+
+    const result = await authService.register(
+      signupData.username,
+      signupData.email,
+      signupData.password
+    )
+
     if (result.success) {
-      setSignupSuccess('Account created! Please login.')
-      setTimeout(() => setModal('login'), 1500)
+      setSignupSuccess('Account created! Logging you in...')
+
+      const loginResult = await authService.login(
+        signupData.username,
+        signupData.password
+      )
+      setLoading(false)
+
+      if (loginResult.success) {
+        setSignupSuccess('Welcome to CipherGuess! Redirecting...')
+        setTimeout(() => navigate('/dashboard'), 800)
+      } else {
+        setSignupSuccess('Account created! Please login.')
+        setTimeout(() => setModal('login'), 1500)
+      }
     } else {
-      setSignupError(result.message)
+      setLoading(false)
+      setSignupSuccess('')
+      setSignupError(result.message || 'Registration failed. Try again.')
     }
   }
 
   function closeModal() {
     setModal(null)
     setLoginError('')
+    setLoginSuccess('')
     setSignupError('')
     setSignupSuccess('')
     setShowLoginPass(false)
     setShowSignupPass(false)
+    setLoading(false)
     setStrength({ score: 0, label: '', color: 'transparent', width: '0%' })
   }
 
   return (
     <div className="index-page">
 
+      {/* ── Navbar ── */}
       <nav className="nav-bar">
         <span className="text-heading">CiPhErGuEsS</span>
         <div className="nav-buttons">
@@ -85,6 +130,7 @@ export default function Index() {
         </div>
       </nav>
 
+      {/* ── Content ── */}
       <main className="content">
         <div className="box-1">
           <h2 className="abt-game">About Game</h2>
@@ -107,6 +153,7 @@ export default function Index() {
         </div>
       </main>
 
+      {/* ── Footer ── */}
       <footer className="footer">
         <div className="footer-left">
           <h4>More Games & Requests</h4>
@@ -126,51 +173,57 @@ export default function Index() {
         </div>
       </footer>
 
+      {/* ── Modals ── */}
       {modal && (
-        <div className="modal-overlay active" onClick={(e) => e.target === e.currentTarget && closeModal()}>
+        <div className="modal-overlay active"
+          onClick={(e) => e.target === e.currentTarget && closeModal()}>
           <div className="modal-box">
             <span className="modal-close" onClick={closeModal}>&times;</span>
 
-            {/* LOGIN */}
+            {/* ── LOGIN ── */}
             {modal === 'login' && (
               <>
                 <h2 className="modal-title">LOGIN</h2>
                 <form onSubmit={handleLogin}>
                   <div className="form-group">
                     <label className="form-label">Username</label>
-                    <input className="form-input" type="text" placeholder="Enter your username"
+                    <input className="form-input" type="text"
+                      placeholder="Enter your username"
                       value={loginData.username}
                       onChange={e => setLoginData({ ...loginData, username: e.target.value })} />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Password</label>
-                    <div style={{ position: 'relative' }}>
+                    <div className="password-wrapper">
                       <input className="form-input"
                         type={showLoginPass ? 'text' : 'password'}
                         placeholder="••••••••"
                         value={loginData.password}
-                        onChange={e => setLoginData({ ...loginData, password: e.target.value })}
-                        style={{ paddingRight: '2.5rem' }} />
-                      <span onClick={() => setShowLoginPass(!showLoginPass)} style={{
-                        position: 'absolute', right: '0.75rem', top: '50%',
-                        transform: 'translateY(-50%)', cursor: 'pointer',
-                        fontSize: '1.1rem', userSelect: 'none'
-                      }}>
-                        {showLoginPass ? '🙈' : '👁️'}
+                        onChange={e => setLoginData({ ...loginData, password: e.target.value })} />
+                      <span className="eye-toggle"
+                        onClick={() => setShowLoginPass(!showLoginPass)}>
+                        <i className={`fas ${showLoginPass ? 'fa-eye-slash' : 'fa-eye'}`}></i>
                       </span>
                     </div>
                   </div>
-                  {loginError && <p className="form-error">{loginError}</p>}
-                  <button className="btn-primary modal-submit" type="submit">LOGIN</button>
+
+                  {loginError   && <p className="form-msg error">{loginError}</p>}
+                  {loginSuccess && <p className="form-msg success">{loginSuccess}</p>}
+
+                  <button className="btn-primary modal-submit" type="submit" disabled={loading}>
+                    {loading ? 'PLEASE WAIT...' : 'LOGIN'}
+                  </button>
                 </form>
                 <div className="modal-switch">
                   Don't have an account?{' '}
-                  <span onClick={() => { setModal('signup'); setLoginError('') }}>Sign Up</span>
+                  <span onClick={() => { setModal('signup'); setLoginError(''); setLoginSuccess('') }}>
+                    Sign Up
+                  </span>
                 </div>
               </>
             )}
 
-            {/* SIGN UP */}
+            {/* ── SIGN UP ── */}
             {modal === 'signup' && (
               <>
                 <h2 className="modal-title">SIGN UP</h2>
@@ -189,7 +242,7 @@ export default function Index() {
                   </div>
                   <div className="form-group">
                     <label className="form-label">Password</label>
-                    <div style={{ position: 'relative' }}>
+                    <div className="password-wrapper">
                       <input className="form-input"
                         type={showSignupPass ? 'text' : 'password'}
                         placeholder="••••••••"
@@ -197,14 +250,10 @@ export default function Index() {
                         onChange={e => {
                           setSignupData({ ...signupData, password: e.target.value })
                           checkStrength(e.target.value)
-                        }}
-                        style={{ paddingRight: '2.5rem' }} />
-                      <span onClick={() => setShowSignupPass(!showSignupPass)} style={{
-                        position: 'absolute', right: '0.75rem', top: '50%',
-                        transform: 'translateY(-50%)', cursor: 'pointer',
-                        fontSize: '1.1rem', userSelect: 'none'
-                      }}>
-                        {showSignupPass ? '🙈' : '👁️'}
+                        }} />
+                      <span className="eye-toggle"
+                        onClick={() => setShowSignupPass(!showSignupPass)}>
+                        <i className={`fas ${showSignupPass ? 'fa-eye-slash' : 'fa-eye'}`}></i>
                       </span>
                     </div>
                     {signupData.password && (
@@ -219,13 +268,19 @@ export default function Index() {
                       </div>
                     )}
                   </div>
-                  {signupError   && <p className="form-error">{signupError}</p>}
-                  {signupSuccess && <p className="form-error" style={{ color: '#00ff88' }}>{signupSuccess}</p>}
-                  <button className="btn-primary modal-submit" type="submit">CREATE ACCOUNT</button>
+
+                  {signupError   && <p className="form-msg error">{signupError}</p>}
+                  {signupSuccess && <p className="form-msg success">{signupSuccess}</p>}
+
+                  <button className="btn-primary modal-submit" type="submit" disabled={loading}>
+                    {loading ? 'PLEASE WAIT...' : 'CREATE ACCOUNT'}
+                  </button>
                 </form>
                 <div className="modal-switch">
                   Already have an account?{' '}
-                  <span onClick={() => { setModal('login'); setSignupError('') }}>Login</span>
+                  <span onClick={() => { setModal('login'); setSignupError(''); setSignupSuccess('') }}>
+                    Login
+                  </span>
                 </div>
               </>
             )}
