@@ -9,7 +9,10 @@ const authService = {
         body: JSON.stringify({ username, email, password })
       })
       const message = await res.text()
-      return { success: message === 'Registered Successfully!', message }
+      return {
+        success: res.ok && message.includes('Successfully'),
+        message
+      }
     } catch {
       return { success: false, message: 'Server error. Try again.' }
     }
