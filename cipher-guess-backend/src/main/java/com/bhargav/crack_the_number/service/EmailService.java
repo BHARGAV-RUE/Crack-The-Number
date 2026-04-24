@@ -104,13 +104,13 @@ public class EmailService {
                             Every game is tracked — can you top your own best score?
                         </p>
 
-                        <!-- CTA Button -->
-                        <div style="text-align:center; margin:32px 0;">
-                            <a href="http://localhost:5173"
-                               style="display:inline-block; background-color:#FFD700; color:#000000; font-family:'Bebas Neue',cursive; font-size:20px; letter-spacing:4px; padding:16px 48px; text-decoration:none;">
-                                PLAY NOW
-                            </a>
-                        </div>
+                      <!-- CTA Button -->
+                          <div style="text-align:center; margin:32px 0;">
+                              <a href="https://cipherguess.vercel.app"
+                                 style="display:inline-block; background-color:#FFD700; color:#000000; font-family:'Bebas Neue',cursive; font-size:20px; letter-spacing:4px; padding:16px 48px; text-decoration:none;">
+                                  PLAY NOW
+                              </a>
+                          </div>
                     </div>
 
                     <!-- Footer -->

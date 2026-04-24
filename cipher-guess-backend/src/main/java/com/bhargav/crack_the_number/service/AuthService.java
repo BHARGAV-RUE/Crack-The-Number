@@ -44,8 +44,12 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
 
-        // Send welcome email
-        emailService.sendWelcomeEmail(request.getEmail(), request.getUsername());
+
+        try {
+            emailService.sendWelcomeEmail(request.getEmail(), request.getUsername());
+        } catch (Exception e) {
+            System.out.println("Email failed but registration succeeded: " + e.getMessage());
+        }
 
         return "Registered Successfully!";
     }
